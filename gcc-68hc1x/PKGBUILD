@@ -1,0 +1,58 @@
+# Maintainer: GaryOderNichts <garyodernichts@gmail.com>
+pkgname=gcc-68hc1x
+pkgver=3.1
+pkgrel=1
+pkgdesc="GNU C, C++ Compilers for 68HC11, 68HC12 and 68HCS12 microcontrollers"
+arch=('i686' 'x86_64')
+url="http://m68hc11.serveftp.org"
+license=('GPL')
+makedepends=('binutils-68hc1x')
+options=(!strip)
+
+_gccver=3.3.6
+_patchver=20060122
+
+source=("http://ftp.gnu.org/pub/gnu/gcc/gcc-${_gccver}/gcc-${_gccver}.tar.gz"
+        "http://web.archive.org/web/2if_/http://m68hc11.serveftp.org/m68hc1x-builder-${pkgver}.tar.gz"
+        "0001_gperf_inline.patch")
+
+sha256sums=('2db67c783dd743b13a682b32b9eadd124420591b6ae5e174255a080a4a810a45'
+            '5a4620f883d2f36aa610d79b649d178ceab8d0835cedbb82da9dbe806acbcbf2'
+            '7c4eb9fb90ca0d3e6b1d67c4686806e44ee8097da0448c61a089d193ad6c23ee')
+
+prepare() {
+    cd "${srcdir}/gcc-${_gccver}"
+
+    patch -p1 < "${srcdir}/m68hc1x-builder-${pkgver}/gcc-${_gccver}-m68hc1x-${_patchver}.diffs"
+    patch -p1 < "${srcdir}/0001_gperf_inline.patch"
+}
+
+build() {
+    cd "${srcdir}/gcc-${_gccver}"
+
+    CFLAGS="-Os -g0 -s" "${srcdir}/gcc-${_gccver}/configure" \
+        --target=m6811-elf \
+        --program-prefix=m6811-elf- \
+	    --enable-languages=c,c++,ada \
+        --with-gnu-as \
+        --with-gnu-ld \
+        --with-as=/usr/bin/m6811-elf-as \
+        --with-ld=/usr/bin/m6811-elf-ld \
+        --prefix=/usr
+
+    make
+}
+
+package() {
+    cd "${srcdir}/gcc-${_gccver}"
+
+    make DESTDIR=${pkgdir} INSTALL=install install
+
+    rm -rf ${pkgdir}/usr/info
+    rm -f ${pkgdir}/usr/lib/libiberty.a
+    rm -rf ${pkgdir}/usr/man
+    rm -rf ${pkgdir}/usr/share/locale
+
+    install -Dm644 "${srcdir}/gcc-${_gccver}/COPYING" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

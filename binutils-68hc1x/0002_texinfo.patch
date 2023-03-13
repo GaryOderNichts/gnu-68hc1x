@@ -1,0 +1,88 @@
+--- a/gas/doc/as.texinfo 
++++ b/gas/doc/as.texinfo
+@@ -3606,11 +3606,11 @@
+ @dfn{Is Not Equal To}
+ @item <
+ @dfn{Is Less Than}
+-@itemx >
++@item >
+ @dfn{Is Greater Than}
+-@itemx >=
++@item >=
+ @dfn{Is Greater Than Or Equal To}
+-@itemx <=
++@item <=
+ @dfn{Is Less Than Or Equal To}
+ 
+ The comparison operators can be used as infix operators.  A true results has a
+--- a/gas/doc/c-mips.texi
++++ b/gas/doc/c-mips.texi
+@@ -143,9 +143,9 @@
+ instructions around accesses to the @samp{HI} and @samp{LO} registers.
+ @samp{-no-m4650} turns off this option.
+ 
+-@itemx -m3900
++@item -m3900
+ @itemx -no-m3900
+-@itemx -m4100
++@item -m4100
+ @itemx -no-m4100
+ For each option @samp{-m@var{nnnn}}, generate code for the MIPS
+ @sc{r@var{nnnn}} chip.  This tells the assembler to accept instructions
+--- a/gas/doc/c-tic54x.texi
++++ b/gas/doc/c-tic54x.texi
+@@ -108,7 +108,7 @@
+ is replaced with x.  At this point, x has already been encountered
+ and the substitution stops.
+ 
+-@smallexample @code
++@smallexample
+  .asg   "x",SYM1 
+  .asg   "SYM1",SYM2
+  .asg   "SYM2",x
+@@ -125,14 +125,14 @@
+ ambiguous by placing colons on either side of the subsym.  The following
+ code: 
+ 
+-@smallexample @code
++@smallexample
+  .eval  "10",x
+ LAB:X:  add     #x, a
+ @end smallexample
+ 
+ When assembled becomes:
+ 
+-@smallexample @code
++@smallexample
+ LAB10  add     #10, a
+ @end smallexample
+ 
+@@ -308,7 +308,7 @@
+ of a label or address.  For example, if an address @code{_label} resides
+ in extended program memory, the value of @code{_label} may be loaded as
+ follows:
+-@smallexample @code
++@smallexample
+  ldx     #_label,16,a    ; loads extended bits of _label
+  or      #_label,a       ; loads lower 16 bits of _label
+  bacc    a               ; full address is in accumulator A
+@@ -344,7 +344,7 @@
+ performed on @var{string} before assignment.
+ 
+ @cindex @code{eval} directive, TIC54X
+-@itemx .eval @var{string}, @var{name}
++@item .eval @var{string}, @var{name}
+ Evaluate the contents of string @var{string} and assign the result as a
+ string to the subsym @var{name}.  String replacement is performed on
+ @var{string} before assignment.
+--- a/ld/ld.texinfo
++++ b/ld/ld.texinfo
+@@ -1548,7 +1548,7 @@
+ 
+ @kindex --version-script=@var{version-scriptfile}
+ @cindex version script, symbol versions
+-@itemx --version-script=@var{version-scriptfile}
++@item --version-script=@var{version-scriptfile}
+ Specify the name of a version script to the linker.  This is typically
+ used when creating shared libraries to specify additional information
+ about the version hierarchy for the library being created.  This option

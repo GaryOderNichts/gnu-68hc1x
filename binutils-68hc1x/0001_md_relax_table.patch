@@ -1,0 +1,22 @@
+--- a/gas/config/tc-m68hc11.h
++++ b/gas/config/tc-m68hc11.h
+@@ -82,8 +82,8 @@
+ 
+ /* Relax table to translate short relative branches (-128..127) into
+    absolute branches.  */
+-#define TC_GENERIC_RELAX_TABLE md_relax_table
+-extern struct relax_type md_relax_table[];
++#define TC_GENERIC_RELAX_TABLE _md_relax_table
++extern struct relax_type * _md_relax_table;
+ 
+ /* GAS only handles relaxations for pc-relative data targeting addresses
+    in the same segment, so we have to handle the rest on our own.  */
+--- a/gas/config/tc-m68hc11.c
++++ b/gas/config/tc-m68hc11.c
+@@ -113,6 +113,7 @@
+   {1, 1, 0, 0},
+ 
+ };
++relax_typeS *_md_relax_table = md_relax_table;
+ 
+ /* 68HC11 and 68HC12 registers.  They are numbered according to the 68HC12.  */

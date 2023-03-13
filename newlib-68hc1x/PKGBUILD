@@ -1,0 +1,50 @@
+# Maintainer: GaryOderNichts <garyodernichts@gmail.com>
+pkgname=newlib-68hc1x
+pkgver=3.1
+pkgrel=1
+pkgdesc="Newlib for 68HC11 and 68HC12 microcontrollers"
+arch=('i686' 'x86_64')
+url="http://m68hc11.serveftp.org"
+license=('GPL')
+makedepends=('gcc-68hc1x')
+options=(!strip)
+
+_newlibver=1.12.0
+_patchver=20040801
+
+source=("ftp://sourceware.org/pub/newlib/newlib-${_newlibver}.tar.gz"
+        "http://web.archive.org/web/2if_/http://m68hc11.serveftp.org/m68hc1x-builder-${pkgver}.tar.gz")
+
+sha256sums=('93ed7c1df0f04656b119745671b08b43befdc0a420b5752ea99ff0057f0238ea'
+            '5a4620f883d2f36aa610d79b649d178ceab8d0835cedbb82da9dbe806acbcbf2')
+
+prepare() {
+    cd "${srcdir}/newlib-${_newlibver}"
+
+    patch -p1 < "${srcdir}/m68hc1x-builder-${pkgver}/newlib-${_newlibver}-m68hc1x-${_patchver}.diffs"
+}
+
+build() {
+    cd "${srcdir}/newlib-${_newlibver}"
+
+    "${srcdir}/newlib-${_newlibver}/configure" \
+        --target=m6811-elf \
+        --program-prefix=m6811-elf- \
+        --disable-newlib-io-float \
+        --disable-newlib-multithread
+
+    # -Os fails with:
+    # fvwrite.c:233: internal compiler error: in merge_assigned_reloads, at reload1.c:6217"
+    make CFLAGS="-O2 -g0"
+}
+
+package() {
+    cd "${srcdir}/newlib-${_newlibver}"
+
+    make -e prefix=${pkgdir}/usr INSTALL=install install
+
+    rm -rf ${pkgdir}/usr/info
+
+    install -Dm644 "${srcdir}/newlib-${_newlibver}/COPYING" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

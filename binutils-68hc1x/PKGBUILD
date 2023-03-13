@@ -1,0 +1,54 @@
+# Maintainer: GaryOderNichts <garyodernichts@gmail.com>
+pkgname=binutils-68hc1x
+pkgver=3.1
+pkgrel=1
+pkgdesc="GNU Binutils for 68HC11 and 68HC12 microcontrollers"
+arch=('i686' 'x86_64')
+url="http://m68hc11.serveftp.org"
+license=('GPL')
+depends=('zlib')
+
+_binutilsver=2.15
+_patchver=20040801
+
+source=("http://ftp.gnu.org/pub/gnu/binutils/binutils-${_binutilsver}.tar.bz2"
+        "http://web.archive.org/web/2if_/http://m68hc11.serveftp.org/m68hc1x-builder-${pkgver}.tar.gz"
+        "0001_md_relax_table.patch"
+        "0002_texinfo.patch")
+
+sha256sums=('7b99deeba79e362b724db923d5b7afd46a4d38e922ada4054eae99b80dc9aa93'
+            '5a4620f883d2f36aa610d79b649d178ceab8d0835cedbb82da9dbe806acbcbf2'
+            '15a8960e72c71a3c58702aa8311343d003621e06acc481d47b8def16031078ed'
+            '5a51df05dfd6054be305c0c456fdb991a7f466d042b36d8fea7666cfa88ff546')
+
+prepare() {
+    cd "${srcdir}/binutils-${_binutilsver}"
+
+    patch -p1 < "${srcdir}/m68hc1x-builder-${pkgver}/binutils-${_binutilsver}-m68hc1x-${_patchver}.diffs"
+    patch -p1 < "${srcdir}/0001_md_relax_table.patch"
+    patch -p1 < "${srcdir}/0002_texinfo.patch"
+}
+
+build() {
+    cd "${srcdir}/binutils-${_binutilsver}"
+
+    CFLAGS="-Os -g0" "${srcdir}/binutils-${_binutilsver}/configure" \
+        --target=m6811-elf \
+        --program-prefix=m6811-elf- \
+        --prefix=/usr
+
+    make
+}
+
+package() {
+    cd "${srcdir}/binutils-${_binutilsver}"
+
+    make DESTDIR=${pkgdir} INSTALL=install install
+
+    rm -rf ${pkgdir}/usr/info
+    rm -rf ${pkgdir}/usr/lib/libiberty.a
+    rm -rf ${pkgdir}/usr/share/locale
+
+    install -Dm644 "${srcdir}/binutils-${_binutilsver}/COPYING" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

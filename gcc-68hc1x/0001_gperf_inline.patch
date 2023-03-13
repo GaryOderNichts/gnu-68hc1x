@@ -1,0 +1,19 @@
+--- a/gcc/cp/cfns.gperf
++++ b/gcc/cp/cfns.gperf
+@@ -1,11 +1,12 @@
+ %{
+ #ifdef __GNUC__
+-__inline
++inline
+ #endif
+-static unsigned int hash PARAMS ((const char *, unsigned int));
++static unsigned int hash PARAMS ((const char *, size_t));
+ #ifdef __GNUC__
+-__inline
++inline
+ #endif
+-const char * libc_name_p PARAMS ((const char *, unsigned int));
++const char * libc_name_p PARAMS ((const char *, size_t));
+ %}
++%%
+ # The standard C library functions, for feeding to gperf; the result is used
